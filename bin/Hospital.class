@@ -1,0 +1,371 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class HospitalApp {
+   public HospitalApp() {
+   }
+
+   public static void addPatient(Patient var0) {
+      try {
+         Connection var1 = Database.getConnection();
+
+         try {
+            String var2 = "INSERT INTO patients (name, age, disease) VALUES (?, ?, ?)";
+            PreparedStatement var3 = var1.prepareStatement(var2);
+            var3.setString(1, var0.getName());
+            var3.setInt(2, var0.getAge());
+            var3.setString(3, var0.getDisease());
+            var3.executeUpdate();
+            System.out.println("Patient added successfully.");
+         } catch (Throwable var5) {
+            if (var1 != null) {
+               try {
+                  var1.close();
+               } catch (Throwable var4) {
+                  var5.addSuppressed(var4);
+               }
+            }
+
+            throw var5;
+         }
+
+         if (var1 != null) {
+            var1.close();
+         }
+      } catch (SQLException var6) {
+         var6.printStackTrace();
+      }
+
+   }
+
+   public static void searchPatient(String var0) {
+      try {
+         Connection var1 = Database.getConnection();
+
+         try {
+            String var2 = "SELECT * FROM patients WHERE name LIKE ? OR id = ?";
+            PreparedStatement var3 = var1.prepareStatement(var2);
+            var3.setString(1, "%" + var0 + "%");
+            var3.setString(2, var0);
+            ResultSet var4 = var3.executeQuery();
+
+            while(var4.next()) {
+               System.out.printf("ID: %d, Name: %s, Age: %d, Disease: %s\n", var4.getInt("id"), var4.getString("name"), var4.getInt("age"), var4.getString("disease"));
+            }
+         } catch (Throwable var6) {
+            if (var1 != null) {
+               try {
+                  var1.close();
+               } catch (Throwable var5) {
+                  var6.addSuppressed(var5);
+               }
+            }
+
+            throw var6;
+         }
+
+         if (var1 != null) {
+            var1.close();
+         }
+      } catch (SQLException var7) {
+         var7.printStackTrace();
+      }
+
+   }
+
+   public static void deletePatient(int var0) {
+      try {
+         Connection var1 = Database.getConnection();
+
+         try {
+            String var2 = "DELETE FROM patients WHERE id = ?";
+            PreparedStatement var3 = var1.prepareStatement(var2);
+            var3.setInt(1, var0);
+            int var4 = var3.executeUpdate();
+            if (var4 > 0) {
+               System.out.println("Patient deleted successfully.");
+            } else {
+               System.out.println("Patient ID not found.");
+            }
+         } catch (Throwable var6) {
+            if (var1 != null) {
+               try {
+                  var1.close();
+               } catch (Throwable var5) {
+                  var6.addSuppressed(var5);
+               }
+            }
+
+            throw var6;
+         }
+
+         if (var1 != null) {
+            var1.close();
+         }
+      } catch (SQLException var7) {
+         var7.printStackTrace();
+      }
+
+   }
+
+   public static void updatePatient(int var0, String var1, int var2, String var3) {
+      try {
+         Connection var4 = Database.getConnection();
+
+         try {
+            String var5 = "UPDATE patients SET name = ?, age = ?, disease = ? WHERE id = ?";
+            PreparedStatement var6 = var4.prepareStatement(var5);
+            var6.setString(1, var1);
+            var6.setInt(2, var2);
+            var6.setString(3, var3);
+            var6.setInt(4, var0);
+            int var7 = var6.executeUpdate();
+            if (var7 > 0) {
+               System.out.println("Patient updated successfully.");
+            } else {
+               System.out.println("Patient ID not found.");
+            }
+         } catch (Throwable var9) {
+            if (var4 != null) {
+               try {
+                  var4.close();
+               } catch (Throwable var8) {
+                  var9.addSuppressed(var8);
+               }
+            }
+
+            throw var9;
+         }
+
+         if (var4 != null) {
+            var4.close();
+         }
+      } catch (SQLException var10) {
+         var10.printStackTrace();
+      }
+
+   }
+
+   public static void addDoctor(String var0, String var1) {
+      try {
+         Connection var2 = Database.getConnection();
+
+         try {
+            String var3 = "INSERT INTO doctors (name, specialty) VALUES (?, ?)";
+            PreparedStatement var4 = var2.prepareStatement(var3);
+            var4.setString(1, var0);
+            var4.setString(2, var1);
+            var4.executeUpdate();
+            System.out.println("Doctor added successfully.");
+         } catch (Throwable var6) {
+            if (var2 != null) {
+               try {
+                  var2.close();
+               } catch (Throwable var5) {
+                  var6.addSuppressed(var5);
+               }
+            }
+
+            throw var6;
+         }
+
+         if (var2 != null) {
+            var2.close();
+         }
+      } catch (SQLException var7) {
+         var7.printStackTrace();
+      }
+
+   }
+
+   public static void listDoctors() {
+      try {
+         Connection var0 = Database.getConnection();
+
+         try {
+            String var1 = "SELECT * FROM doctors";
+            Statement var2 = var0.createStatement();
+            ResultSet var3 = var2.executeQuery(var1);
+
+            while(var3.next()) {
+               System.out.printf("ID: %d, Name: %s, Specialty: %s\n", var3.getInt("id"), var3.getString("name"), var3.getString("specialty"));
+            }
+         } catch (Throwable var5) {
+            if (var0 != null) {
+               try {
+                  var0.close();
+               } catch (Throwable var4) {
+                  var5.addSuppressed(var4);
+               }
+            }
+
+            throw var5;
+         }
+
+         if (var0 != null) {
+            var0.close();
+         }
+      } catch (SQLException var6) {
+         var6.printStackTrace();
+      }
+
+   }
+
+   public static void scheduleAppointment(int var0, int var1, String var2) {
+      try {
+         Connection var3 = Database.getConnection();
+
+         try {
+            String var4 = "INSERT INTO appointments (patient_id, doctor_id, appointment_date) VALUES (?, ?, ?)";
+            PreparedStatement var5 = var3.prepareStatement(var4);
+            var5.setInt(1, var0);
+            var5.setInt(2, var1);
+            var5.setString(3, var2);
+            var5.executeUpdate();
+            System.out.println("Appointment scheduled successfully.");
+         } catch (Throwable var7) {
+            if (var3 != null) {
+               try {
+                  var3.close();
+               } catch (Throwable var6) {
+                  var7.addSuppressed(var6);
+               }
+            }
+
+            throw var7;
+         }
+
+         if (var3 != null) {
+            var3.close();
+         }
+      } catch (SQLException var8) {
+         var8.printStackTrace();
+      }
+
+   }
+
+   public static void listPatients() {
+      try {
+         Connection var0 = Database.getConnection();
+
+         try {
+            String var1 = "SELECT * FROM patients";
+            Statement var2 = var0.createStatement();
+            ResultSet var3 = var2.executeQuery(var1);
+
+            while(var3.next()) {
+               System.out.printf("ID: %d, Name: %s, Age: %d, Disease: %s\n", var3.getInt("id"), var3.getString("name"), var3.getInt("age"), var3.getString("disease"));
+            }
+         } catch (Throwable var5) {
+            if (var0 != null) {
+               try {
+                  var0.close();
+               } catch (Throwable var4) {
+                  var5.addSuppressed(var4);
+               }
+            }
+
+            throw var5;
+         }
+
+         if (var0 != null) {
+            var0.close();
+         }
+      } catch (SQLException var6) {
+         var6.printStackTrace();
+      }
+
+   }
+
+   public static void main(String[] var0) {
+      Scanner var1 = new Scanner(System.in);
+
+      while(true) {
+         while(true) {
+            System.out.println("1. Add Patient");
+            System.out.println("2. List All Patients");
+            System.out.println("3. Search Patient");
+            System.out.println("4. Delete Patient");
+            System.out.println("5. Update Patient");
+            System.out.println("6. Add Doctor");
+            System.out.println("7. List Doctors");
+            System.out.println("8. Schedule Appointment");
+            System.out.println("9. Exit");
+            System.out.print("Choose: ");
+            int var2 = var1.nextInt();
+            var1.nextLine();
+            String var3;
+            int var8;
+            String var9;
+            if (var2 == 1) {
+               System.out.print("Name: ");
+               var3 = var1.nextLine();
+               System.out.print("Age: ");
+               var8 = var1.nextInt();
+               var1.nextLine();
+               System.out.print("Disease: ");
+               var9 = var1.nextLine();
+               addPatient(new Patient(var3, var8, var9));
+            } else if (var2 == 2) {
+               listPatients();
+            } else if (var2 == 3) {
+               System.out.print("Enter name or ID: ");
+               var3 = var1.nextLine();
+               searchPatient(var3);
+            } else {
+               int var7;
+               if (var2 == 4) {
+                  System.out.print("Enter ID to delete: ");
+                  var7 = var1.nextInt();
+                  deletePatient(var7);
+               } else {
+                  String var4;
+                  if (var2 == 5) {
+                     System.out.print("Enter ID to update: ");
+                     var7 = var1.nextInt();
+                     var1.nextLine();
+                     System.out.print("New Name: ");
+                     var4 = var1.nextLine();
+                     System.out.print("New Age: ");
+                     int var5 = var1.nextInt();
+                     var1.nextLine();
+                     System.out.print("New Disease: ");
+                     String var6 = var1.nextLine();
+                     updatePatient(var7, var4, var5, var6);
+                  } else if (var2 == 6) {
+                     System.out.print("Doctor Name: ");
+                     var3 = var1.nextLine();
+                     System.out.print("Specialty: ");
+                     var4 = var1.nextLine();
+                     addDoctor(var3, var4);
+                  } else if (var2 == 7) {
+                     listDoctors();
+                  } else if (var2 == 8) {
+                     System.out.print("Enter Patient ID: ");
+                     var7 = var1.nextInt();
+                     var1.nextLine();
+                     System.out.print("Enter Doctor ID: ");
+                     var8 = var1.nextInt();
+                     var1.nextLine();
+                     System.out.print("Enter Appointment Date and Time (YYYY-MM-DD HH:MM): ");
+                     var9 = var1.nextLine();
+                     scheduleAppointment(var7, var8, var9);
+                  } else {
+                     if (var2 == 9) {
+                        System.out.println("Thank You ...");
+                        return;
+                     }
+
+                     System.out.println("Invalid choice.");
+                  }
+               }
+            }
+         }
+      }
+   }
+}
